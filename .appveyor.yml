@@ -1,0 +1,11 @@
+image:
+  - Visual Studio 2019
+
+install:
+  - set PATH=C:\Qt\Tools\mingw810_32\bin;%PATH%
+
+build_script:
+  - mkdir build
+  - cd build
+  - cmake -G "MinGW Makefiles" -D Qt5_DIR=C:\Qt\5.15.2\mingw81_32\lib\cmake\Qt5 ..
+  - cmake --build .
