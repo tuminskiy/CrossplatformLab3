@@ -15,7 +15,7 @@ set(SRC main.cpp)
 
 find_package(Qt5 COMPONENTS Core Network REQUIRED)
 
-#target_include_directories(server PRIVATE ${CMAKE_SOURCE_DIR}/protocol)
+target_include_directories(server PRIVATE ${CMAKE_SOURCE_DIR}/protocol)
 message(${CMAKE_SOURCE_DIR})
 target_sources(server PRIVATE ${SRC})
-target_link_libraries(server PRIVATE Qt5::Core Qt5::Network)
+target_link_libraries(server PRIVATE Qt5::Core Qt5::Network protocol)

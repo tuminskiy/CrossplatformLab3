@@ -16,6 +16,6 @@ endif()
 
 message("build options: ${CMAKE_CXX_FLAGS}")
 
-#add_subdirectory(${CMAKE_SOURCE_DIR}/protocol)
+add_subdirectory(${CMAKE_SOURCE_DIR}/protocol)
 add_subdirectory(${CMAKE_SOURCE_DIR}/server)
 add_subdirectory(${CMAKE_SOURCE_DIR}/client)
