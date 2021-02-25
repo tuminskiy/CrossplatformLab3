@@ -20,5 +20,6 @@ set(SRC main.cpp ${GUI_SRC})
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
+target_include_directories(client PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/protocol)
 target_sources(client PRIVATE ${SRC})
-target_link_libraries(client PRIVATE Qt5::Widgets)
+target_link_libraries(client PRIVATE Qt5::Widgets protocol)
