@@ -120,7 +120,7 @@ class RegResponse
   Status status_;
 
 public:
-  Status status() { return status_; }
+  Status status() const { return status_; }
   void set_status(Status status) { status_ = status; }
 };
 
@@ -145,6 +145,7 @@ public:
     clear_msg();
   }
 
+  const char* login() const { return login_; }
   void set_login(std::string_view sv)
   {
     clear_login();

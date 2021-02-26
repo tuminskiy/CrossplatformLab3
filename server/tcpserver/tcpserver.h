@@ -25,6 +25,7 @@ public:
 
 private slots:
   void new_connection();
+  void client_disconnect();
   void read_header();
 
   void reg_request(QTcpSocket* sender, const QByteArray& bytes);
