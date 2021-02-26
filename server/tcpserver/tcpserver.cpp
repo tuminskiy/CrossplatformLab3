@@ -32,11 +32,25 @@ void TcpServer::new_connection()
   auto client = server_.nextPendingConnection();
   client->setParent(this);
 
-  connections_.push_back(client);
-
+  connect(client, &QTcpSocket::disconnected,
+          this, &TcpServer::client_disconnect);
   connect(client, &QTcpSocket::readyRead,
           this, &TcpServer::read_header);
+
+  std::cout << "New connection: " << client->peerAddress().toString().toStdString() << "\n";
+
+  connections_.push_back(client);
 }
+
+
+void TcpServer::client_disconnect()
+{
+  auto client = qobject_cast<QTcpSocket*>(sender());
+  std::cout << "Disconnect: " << client->peerAddress().toString().toStdString() << "\n";
+  connections_.remove(client);
+  client->deleteLater();
+}
+
 
 void TcpServer::read_header()
 {
@@ -50,13 +64,13 @@ void TcpServer::read_header()
   case protocol::TypeCommand::AuthorisationRequest: auth_request(client, bytes); break;
   case protocol::TypeCommand::MessageRequest: msg_request(client, bytes); break;
   default:
-    client->deleteLater();
     connections_.remove(client);
-    std::cerr << "Unkow command: " << protocol::command_to_str(header.command) << '\n';
+    client->deleteLater();
+    std::cout << "Unkow command: " << protocol::command_to_str(header.command) << '\n';
     break;
   }
 
-  std::clog << "Bytes arrived: " << bytes.size() << '\n';
+  std::cout << "Bytes arrived: " << bytes.size() << '\n';
 }
 
 void TcpServer::reg_request(QTcpSocket* sender, const QByteArray& bytes)

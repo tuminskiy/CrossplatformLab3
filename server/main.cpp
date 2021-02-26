@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   config.port = 5432;
   config.db_name = "tumin";
   config.username = "tumin";
-  config.password = "12345";
+  config.password = "1234";
 
   storage::Database db(config);
 
