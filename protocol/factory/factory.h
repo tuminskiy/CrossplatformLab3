@@ -21,6 +21,11 @@ public:
     ByteArray buff(block::Header + sizeof(T), '\0');
 
     const auto command = traits::command_v<T>;
+
+    if (command == TypeCommand::Unknown) {
+      throw std::logic_error("Serialize: unknow message, TypeCommand is Unknow");
+    }
+
     const auto dt = util::current_datetime();
 
     std::memcpy(buff.data(), &command, block::Command);
