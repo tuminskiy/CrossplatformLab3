@@ -136,7 +136,6 @@ public:
 class MsgResponse
 {
   char login_[block::Login];
-  util::DateTime dt_;
   char msg_[block::Message];
 
 public:
@@ -152,9 +151,6 @@ public:
     const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Login);
     sv.copy(login_, count);
   }
-
-  util::DateTime dt() const { return dt_; }
-  void set_dt(const util::DateTime& dt) { dt_ = dt; }
 
   const char* msg() const { return msg_; }
   void set_msg(std::string_view sv)
