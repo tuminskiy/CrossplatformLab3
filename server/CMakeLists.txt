@@ -11,9 +11,9 @@ set_target_properties(server PROPERTIES
   INCLUDE_CURRENT_DIR ON
 )
 
-set(SERVER_SRC tcpserver/tcpserver.cpp)
+#set(SERVER_SRC tcpserver/tcpserver.cpp)
 
-set(SRC main.cpp ${SERVER_SRC} )
+set(SRC main.cpp  )
 
 
 find_package(Qt5 COMPONENTS Core Network REQUIRED)
