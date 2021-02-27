@@ -4,7 +4,6 @@
 #include "definitions/typecommand_traits.h"
 #include "definitions/messages.h"
 
-#include <utility> // std::forward
 #include <type_traits>
 #include <cstring>
 #include <functional>
