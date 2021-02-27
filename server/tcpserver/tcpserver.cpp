@@ -4,8 +4,6 @@
 
 #include <QTcpSocket>
 
-#include <iostream>
-
 namespace network {
 
 using Factory = protocol::Factory<QByteArray>;
@@ -20,6 +18,7 @@ bool TcpServer::listen(quint16 port)
   const auto success = server_.listen(QHostAddress::Any, port);
 
   if (success) {
+    db_->log_event(util::current_datetime(), "Server started");
     connect(&server_, &QTcpServer::newConnection,
             this, &TcpServer::new_connection);
   }
@@ -37,18 +36,19 @@ void TcpServer::new_connection()
   connect(client, &QTcpSocket::readyRead,
           this, &TcpServer::read_header);
 
-  std::cout << "New connection: " << client->peerAddress().toString().toStdString() << "\n";
-
   connections_.push_back(client);
+
+  db_->log_event(util::current_datetime(), "New connection: " + client->peerAddress().toString());
 }
 
 
 void TcpServer::client_disconnect()
 {
   auto client = qobject_cast<QTcpSocket*>(sender());
-  std::cout << "Disconnect: " << client->peerAddress().toString().toStdString() << "\n";
   connections_.remove(client);
   client->deleteLater();
+
+  db_->log_event(util::current_datetime(), "Disconnect: " + client->peerAddress().toString());
 }
 
 
@@ -66,11 +66,10 @@ void TcpServer::read_header()
   default:
     connections_.remove(client);
     client->deleteLater();
-    std::cout << "Unkow command: " << protocol::command_to_str(header.command) << '\n';
+    db_->log_event(header.dt, "Request unknow command: "
+                   + QString{protocol::command_to_str(header.command).data()});
     break;
   }
-
-  std::cout << "Bytes arrived: " << bytes.size() << '\n';
 }
 
 void TcpServer::reg_request(QTcpSocket* sender, const QByteArray& bytes)
@@ -86,6 +85,11 @@ void TcpServer::reg_request(QTcpSocket* sender, const QByteArray& bytes)
   response.set_status(status);
 
   sender->write(Factory::serialize(response));
+
+  const auto header = Factory::get_header(bytes);
+  db_->log_event(header.dt,
+                 QString{protocol::command_to_str(header.command).data()}
+                 + " from " + sender->peerAddress().toString());
 }
 
 void TcpServer::auth_request(QTcpSocket* sender, const QByteArray& bytes)
@@ -101,6 +105,11 @@ void TcpServer::auth_request(QTcpSocket* sender, const QByteArray& bytes)
   response.set_status(status);
 
   sender->write(Factory::serialize(response));
+
+  const auto header = Factory::get_header(bytes);
+  db_->log_event(header.dt,
+                 QString{protocol::command_to_str(header.command).data()}
+                 + " from " + sender->peerAddress().toString());
 }
 
 void TcpServer::msg_request(QTcpSocket* sender, const QByteArray& bytes)
@@ -117,6 +126,11 @@ void TcpServer::msg_request(QTcpSocket* sender, const QByteArray& bytes)
     if (client != sender)
       client ->write(res_data);
   }
+
+  const auto header = Factory::get_header(bytes);
+  db_->log_event(header.dt,
+                 QString{protocol::command_to_str(header.command).data()} + " from "
+                 + sender->peerAddress().toString());
 }
 
 
