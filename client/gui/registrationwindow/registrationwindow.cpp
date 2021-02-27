@@ -33,7 +33,7 @@ void RegistrationWindow::confirm_clicked()
 
   protocol::RegRequest req;
   req.set_login(login.toStdString());
-  req.set_password(login.toStdString());
+  req.set_password(password.toStdString());
 
   connect(socket_, &QTcpSocket::readyRead,
           this, &RegistrationWindow::read_response);
@@ -49,7 +49,7 @@ void RegistrationWindow::read_response()
   const auto bytes = socket_->readAll();
   const auto header = Factory::get_header(bytes);
 
-  if (header.command != protocol::TypeCommand::RegistrationResponse) {
+  if (header.command() != protocol::TypeCommand::RegistrationResponse) {
     QMessageBox::critical(this, "Critical", "Response isn't RegistrationResponse");
     return;
   }

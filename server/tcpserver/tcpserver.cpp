@@ -59,15 +59,15 @@ void TcpServer::read_header()
 
   const auto header = Factory::get_header(bytes);
 
-  switch (header.command) {
+  switch (header.command()) {
   case protocol::TypeCommand::RegistrationRequest: reg_request(client, bytes); break;
   case protocol::TypeCommand::AuthorisationRequest: auth_request(client, bytes); break;
   case protocol::TypeCommand::MessageRequest: msg_request(client, bytes); break;
   default:
     connections_.remove(client);
     client->deleteLater();
-    db_->log_event(header.dt, "Request unknow command: "
-                   + QString{protocol::command_to_str(header.command).data()});
+    db_->log_event(header.date(), "Request unknow command: "
+                   + QString{protocol::command_to_str(header.command()).data()});
     break;
   }
 }
@@ -87,8 +87,8 @@ void TcpServer::reg_request(QTcpSocket* sender, const QByteArray& bytes)
   sender->write(Factory::serialize(response));
 
   const auto header = Factory::get_header(bytes);
-  db_->log_event(header.dt,
-                 QString{protocol::command_to_str(header.command).data()}
+  db_->log_event(header.date(),
+                 QString{protocol::command_to_str(header.command()).data()}
                  + " from " + sender->peerAddress().toString());
 }
 
@@ -107,8 +107,8 @@ void TcpServer::auth_request(QTcpSocket* sender, const QByteArray& bytes)
   sender->write(Factory::serialize(response));
 
   const auto header = Factory::get_header(bytes);
-  db_->log_event(header.dt,
-                 QString{protocol::command_to_str(header.command).data()}
+  db_->log_event(header.date(),
+                 QString{protocol::command_to_str(header.command()).data()}
                  + " from " + sender->peerAddress().toString());
 }
 
@@ -128,8 +128,8 @@ void TcpServer::msg_request(QTcpSocket* sender, const QByteArray& bytes)
   }
 
   const auto header = Factory::get_header(bytes);
-  db_->log_event(header.dt,
-                 QString{protocol::command_to_str(header.command).data()} + " from "
+  db_->log_event(header.date(),
+                 QString{protocol::command_to_str(header.command()).data()} + " from "
                  + sender->peerAddress().toString());
 }
 

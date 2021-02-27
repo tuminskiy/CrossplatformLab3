@@ -7,10 +7,17 @@
 
 namespace protocol {
 
-struct Header
+class Header
 {
-  TypeCommand command;
-  util::DateTime dt;
+  TypeCommand command_;
+  util::DateTime date_;
+
+public:
+  TypeCommand command() const { return command_; }
+  void set_command(TypeCommand command) { command_ = command; }
+
+  util::DateTime date() const { return date_; }
+  void set_date(const util::DateTime& date) { date_ = date; }
 };
 
 class RegRequest
@@ -29,7 +36,7 @@ public:
   void set_login(std::string_view sv)
   {
     clear_login();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Login);
+    const auto count = sv.size() < block::Login ? sv.size() : block::Login;
     sv.copy(login_, count);
   }
 
@@ -37,8 +44,8 @@ public:
   void set_password(std::string_view sv)
   {
     clear_password();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Password);
-    sv.copy(password_, block::Password);
+    const auto count = sv.size() < block::Password ? sv.size() : block::Password;
+    sv.copy(password_, count);
   }
 
 private:
@@ -62,7 +69,7 @@ public:
   void set_login(std::string_view sv)
   {
     clear_login();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Login);
+    const auto count = sv.size() < block::Login ? sv.size() : block::Login;
     sv.copy(login_, count);
   }
 
@@ -70,8 +77,8 @@ public:
   void set_password(std::string_view sv)
   {
     clear_password();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Password);
-    sv.copy(password_, block::Password);
+    const auto count = sv.size() < block::Password ? sv.size() : block::Password;
+    sv.copy(password_, count);
   }
 
 private:
@@ -95,7 +102,7 @@ public:
   void set_login(std::string_view sv)
   {
     clear_login();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Login);
+    const auto count = sv.size() < block::Login ? sv.size() : block::Login;
     sv.copy(login_, count);
   }
 
@@ -103,8 +110,8 @@ public:
   void set_msg(std::string_view sv)
   {
     clear_msg();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Message);
-    sv.copy(msg_, block::Message);
+    const auto count = sv.size() < block::Message ? sv.size() : block::Message;
+    sv.copy(login_, count);
   }
 
 private:
@@ -149,7 +156,7 @@ public:
   void set_login(std::string_view sv)
   {
     clear_login();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Login);
+    const auto count = sv.size() < block::Login ? sv.size() : block::Login;
     sv.copy(login_, count);
   }
 
@@ -157,8 +164,8 @@ public:
   void set_msg(std::string_view sv)
   {
     clear_msg();
-    const auto count = std::min(static_cast<uint32_t>(sv.size()), block::Message);
-    sv.copy(msg_, block::Message);
+    const auto count = sv.size() < block::Message ? sv.size() : block::Message;
+    sv.copy(login_, count);
   }
 
 private:

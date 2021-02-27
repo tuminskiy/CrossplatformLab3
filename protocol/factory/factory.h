@@ -37,12 +37,17 @@ public:
 
   static Header get_header(const ByteArray& bytes)
   {
-    Header result;
+    TypeCommand command;
+    util::DateTime date;
 
-    std::memcpy(&result.command, bytes.data(), block::Command);
-    std::memcpy(&result.dt, bytes.data() + block::Command, block::DateTime);
+    std::memcpy(&command, bytes.data(), block::Command);
+    std::memcpy(&date, bytes.data() + block::Command, block::DateTime);
 
-    return result;
+    Header header;
+    header.set_command(command);
+    header.set_date(date);
+
+    return header;
   }
 
   template <class T>

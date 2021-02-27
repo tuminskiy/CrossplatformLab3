@@ -33,7 +33,7 @@ void MainWindow::set_login(const QString& login)
 
 void MainWindow::msg_change()
 {
-  if (protocol::block::Message < ui_.teMsg->toPlainText().size())
+  if (protocol::block::Message < static_cast<uint32_t>(ui_.teMsg->toPlainText().size()))
     ui_.teMsg->textCursor().deletePreviousChar();
 }
 
@@ -60,7 +60,7 @@ void MainWindow::read_response()
   const auto bytes = socket_->readAll();
   const auto header = Factory::get_header(bytes);
 
-  if (header.command != protocol::TypeCommand::MessageResponse) {
+  if (header.command() != protocol::TypeCommand::MessageResponse) {
     QMessageBox::critical(this, "Critical", "Response isn't MessageResponse");
     return;
   }

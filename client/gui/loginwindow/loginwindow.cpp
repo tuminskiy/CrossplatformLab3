@@ -54,7 +54,7 @@ void LoginWindow::read_response()
   const auto bytes = socket_->readAll();
   const auto header = Factory::get_header(bytes);
 
-  if (header.command != protocol::TypeCommand::AuthorisationResponse) {
+  if (header.command() != protocol::TypeCommand::AuthorisationResponse) {
     QMessageBox::critical(this, "Critical", "Response isn't AuthorisationResponse");
     return;
   }
