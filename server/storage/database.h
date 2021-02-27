@@ -2,6 +2,8 @@
 
 #include <QSqlDatabase>
 
+#include "util/datetime.h"
+
 namespace storage {
 
 struct DatabaseConfig
@@ -27,6 +29,8 @@ public:
   bool save_user(const QString& login, const QString& password);
 
   bool user_exist(const QString& login, const QString& password);
+
+  void log_event(const util::DateTime& dt, const QString& event);
 };
 
 } // namespace storage
