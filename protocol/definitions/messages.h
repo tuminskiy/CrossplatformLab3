@@ -111,7 +111,7 @@ public:
   {
     clear_msg();
     const auto count = sv.size() < block::Message ? sv.size() : block::Message;
-    sv.copy(login_, count);
+    sv.copy(msg_, count);
   }
 
 private:
@@ -165,7 +165,7 @@ public:
   {
     clear_msg();
     const auto count = sv.size() < block::Message ? sv.size() : block::Message;
-    sv.copy(login_, count);
+    sv.copy(msg_, count);
   }
 
 private:
