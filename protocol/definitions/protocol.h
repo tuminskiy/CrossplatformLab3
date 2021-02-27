@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <string_view>
+#include <string>
 #include <cstdint>
 
 #include "util/datetime.h"
@@ -21,7 +21,7 @@ enum class TypeCommand : uint16_t {
   MessageResponse
 };
 
-static const std::unordered_map<TypeCommand, std::string_view> type_command_str = {
+static const std::unordered_map<TypeCommand, std::string> type_command_str = {
   {TypeCommand::Unknown,               "Unknow"},
   {TypeCommand::RegistrationRequest,   "RegistrationRequest"},
   {TypeCommand::RegistrationResponse,  "RegistrationResponse"},
@@ -31,7 +31,7 @@ static const std::unordered_map<TypeCommand, std::string_view> type_command_str 
   {TypeCommand::MessageResponse,       "MessageResponse"}
 };
 
-inline const std::string_view command_to_str(TypeCommand command)
+inline const std::string& command_to_str(TypeCommand command)
 {
   const auto it = type_command_str.find(command);
   return it != type_command_str.end() ? it->second : type_command_str.at(TypeCommand::Unknown);

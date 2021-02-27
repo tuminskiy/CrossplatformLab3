@@ -1,9 +1,9 @@
 #include "database.h"
 
 #include <QSqlQuery>
-#include <QVariant>
 #include <QSqlError>
-#include <QDebug>
+#include <QVariant>
+#include <QChar>
 
 namespace storage {
 
@@ -34,11 +34,29 @@ bool Database::save_user(const QString& login, const QString& password)
 bool Database::user_exist(const QString& login, const QString& password)
 {
   QSqlQuery query(db_);
-  query.prepare("SELECT login FROM users WHERE login=:login AND password=:password");
+  query.prepare("SELECT login FROM users WHERE login=:login AND password=:password;");
   query.bindValue(":login", login);
   query.bindValue(":password", password);
 
   return query.exec() && query.next();
+}
+
+void Database::log_event(const util::DateTime& dt, const QString& event)
+{
+  auto dt_str = QString{"%1-%2-%3 %4:%5:%6"}
+      .arg(dt.date.year, 4, 10, QChar{'0'})
+      .arg(dt.date.month, 2, 10, QChar{'0'})
+      .arg(dt.date.day, 2, 10, QChar{'0'})
+      .arg(dt.time.hours, 2, 10, QChar{'0'})
+      .arg(dt.time.minutes, 2, 10, QChar{'0'})
+      .arg(dt.time.seconds, 2, 10, QChar{'0'});
+
+  QSqlQuery query(db_);
+  query.prepare("INSERT INTO logs VALUES (:date, :event);");
+  query.bindValue(":date", dt_str);
+  query.bindValue(":event", event);
+
+  query.exec();
 }
 
 
