@@ -4,6 +4,8 @@
 
 #include <QMessageBox>
 #include <QTcpSocket>
+#include <QRegExpValidator>
+#include <QRegExp>
 
 using Factory = protocol::Factory<QByteArray>;
 
@@ -11,11 +13,15 @@ RegistrationWindow::RegistrationWindow(QTcpSocket* socket, QWidget *parent)
   : QWidget(parent)
   , ui_()
   , socket_(socket)
+  , validator_(new QRegExpValidator(QRegExp{"^[^\\W\\s]+$"}, this))
 {
   ui_.setupUi(this);
 
   ui_.leLogin->setMaxLength(protocol::block::Login);
   ui_.lePassword->setMaxLength(protocol::block::Password);
+
+  ui_.leLogin->setValidator(validator_);
+  ui_.lePassword->setValidator(validator_);
 
   connect(ui_.bConfirm, &QPushButton::clicked,
           this, &RegistrationWindow::confirm_clicked);

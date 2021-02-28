@@ -14,7 +14,6 @@ class MainWindow : public QMainWindow
   Ui::MainWindow ui_;
   QTcpSocket* socket_;
   QString login_;
-  QStringListModel model_;
 
 public:
   explicit MainWindow(QTcpSocket* socket, QWidget *parent = nullptr);
@@ -29,5 +28,5 @@ private slots:
   void read_response();
 
 private:
-  void append_msg(const QString& msg);
+  void append_msg(const QString& login, const QString& msg);
 };
