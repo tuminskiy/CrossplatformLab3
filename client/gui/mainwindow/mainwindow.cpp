@@ -14,7 +14,6 @@ MainWindow::MainWindow(QTcpSocket* socket, QWidget *parent)
   , socket_(socket)
 {
   ui_.setupUi(this);
-  ui_.lvChat->setModel(&model_);
 
   connect(ui_.teMsg, &QTextEdit::textChanged,
           this, &MainWindow::msg_change);
@@ -39,7 +38,7 @@ void MainWindow::msg_change()
 
 void MainWindow::send_click()
 {
-  const auto msg = ui_.teMsg->toPlainText();
+  const auto msg = ui_.teMsg->toPlainText().trimmed();
 
   if (msg.isEmpty())
     return;
@@ -50,7 +49,7 @@ void MainWindow::send_click()
 
   socket_->write(Factory::serialize(req));
 
-  append_msg(login_ + ": " + msg);
+  append_msg(login_, msg);
 
   ui_.teMsg->clear();
 }
@@ -66,15 +65,15 @@ void MainWindow::read_response()
   }
 
   const auto data = Factory::deserialize<protocol::MsgResponse>(bytes);
-  const auto msg = QString{data.login()} + ": " + data.msg();
 
-  append_msg(msg);
+  append_msg(data.login(), data.msg());
 }
 
-void MainWindow::append_msg(const QString& msg)
+void MainWindow::append_msg(const QString& login, const QString& msg)
 {
-  model_.insertRow(model_.rowCount());
-  const auto index = model_.index(model_.rowCount() - 1, 0);
-  model_.setData(index, msg);
+  auto cursor = ui_.tbChat->textCursor();
+  cursor.movePosition(QTextCursor::End);
+  cursor.insertHtml("<br/><b>" + login + ":</b> ");
+  cursor.insertText(msg);
 }
 
