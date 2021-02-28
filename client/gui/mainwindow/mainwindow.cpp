@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QScrollBar>
 
 using Factory = protocol::Factory<QByteArray>;
 
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QTcpSocket* socket, QWidget *parent)
   : QMainWindow(parent)
   , ui_()
   , socket_(socket)
+  , scrolled_to_end_(true)
 {
   ui_.setupUi(this);
 
@@ -20,6 +22,9 @@ MainWindow::MainWindow(QTcpSocket* socket, QWidget *parent)
 
   connect(ui_.bSend, &QPushButton::clicked,
           this, &MainWindow::send_click);
+
+  connect(ui_.tbChat->verticalScrollBar(), &QScrollBar::valueChanged,
+          this, &MainWindow::chat_scroll);
 }
 
 void MainWindow::set_login(const QString& login)
@@ -69,11 +74,21 @@ void MainWindow::read_response()
   append_msg(data.login(), data.msg());
 }
 
+void MainWindow::chat_scroll(int value)
+{
+  scrolled_to_end_ = (value == ui_.tbChat->verticalScrollBar()->maximum());
+}
+
 void MainWindow::append_msg(const QString& login, const QString& msg)
 {
   auto cursor = ui_.tbChat->textCursor();
   cursor.movePosition(QTextCursor::End);
   cursor.insertHtml("<br/><b>" + login + ":</b> ");
   cursor.insertText(msg);
+
+  if (scrolled_to_end_) {
+    auto scroll_bar = ui_.tbChat->verticalScrollBar();
+    scroll_bar->setValue(scroll_bar->maximum());
+  }
 }
 

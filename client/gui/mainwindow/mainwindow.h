@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow
   Ui::MainWindow ui_;
   QTcpSocket* socket_;
   QString login_;
+  bool scrolled_to_end_;
 
 public:
   explicit MainWindow(QTcpSocket* socket, QWidget *parent = nullptr);
@@ -26,6 +27,8 @@ private slots:
   void send_click();
 
   void read_response();
+
+  void chat_scroll(int value);
 
 private:
   void append_msg(const QString& login, const QString& msg);
